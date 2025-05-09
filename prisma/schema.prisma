@@ -1,0 +1,71 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid()) @map("id")
+  email      String   @unique @map("email")
+  password   String   @map("password")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Company {
+  id         String    @id @default(uuid()) @map("id")
+  name       String    @map("name")
+  domain     String    @map("domain")
+  industry   String    @map("industry")
+  contacts   Contact[] 
+  deals      Deal[]    
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("companies")
+}
+
+model Contact {
+  id         String   @id @default(uuid()) @map("id")
+  firstName  String   @map("first_name")
+  lastName   String   @map("last_name")
+  email      String   @unique @map("email")
+  phone      String   @map("phone")
+  company    Company? @relation(fields: [companyId], references: [id])
+  companyId  String?  @map("company_id")
+  deals      Deal[]
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("contacts")
+}
+
+model Deal {
+  id         String    @id @default(uuid()) @map("id")
+  title      String    @map("title")
+  amount     Float     @map("amount")
+  stage      DealStage @map("stage")
+  company    Company?  @relation(fields: [companyId], references: [id])
+  companyId  String?   @map("company_id")
+  contact    Contact?  @relation(fields: [contactId], references: [id])
+  contactId  String?   @map("contact_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("deals")
+}
+
+enum DealStage {
+  LEAD        // Initial contact or prospecting
+  QUALIFIED   // Prospect has been qualified as a potential customer
+  NEGOTIATION // Discussing terms, pricing, etc.
+  CLOSED_WON  // Deal was complete.
+  CLOSED_LOST // Deal fell through.
+}
