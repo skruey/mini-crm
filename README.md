@@ -19,12 +19,20 @@ Open docker when downloaded
 
 ### Setup and Run
 
-git clone https://github.com/skruey/mini-crm.git && cd mini-crm
-cp .env.example .env (DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mini_crm")
+git clone https://github.com/skruey/mini-crm.git
+
+cd mini-crm
+
+cp .env.example .env (DATABASE_URL="postgresql://postgres:postgres@localhost:5432/
+mini_crm")
 docker compose up -d db
+
 npm install
+
 npx prisma migrate deploy
+
 npx prisma db seed
+
 npm run dev
 
 ### Access Visual DB in browser if needed
