@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Building2, Contact, DollarSign, LogOut } from "lucide-react";
+import { Building2, Contact, DollarSign, LogOut, Search } from "lucide-react";
 
 import {
   Sidebar,
@@ -24,6 +24,12 @@ export function DashboardSidebar() {
     router.push(`/dashboard?tab=${tab}`);
   };
 
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
+    router.push("/"); // Redirect to home page
+    router.refresh(); // Optional: refresh state/clear user info
+  };
+
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="border-b border-border">
@@ -39,7 +45,10 @@ export function DashboardSidebar() {
               asChild
               isActive={pathname === "/dashboard" && currentTab === "companies"}
             >
-              <button onClick={() => handleTabChange("companies")}>
+              <button
+                onClick={() => handleTabChange("companies")}
+                className="hover:cursor-pointer"
+              >
                 <Building2 />
                 <span>Companies</span>
               </button>
@@ -47,7 +56,10 @@ export function DashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={currentTab === "contacts"}>
-              <button onClick={() => handleTabChange("contacts")}>
+              <button
+                onClick={() => handleTabChange("contacts")}
+                className="hover:cursor-pointer"
+              >
                 <Contact />
                 <span>Contacts</span>
               </button>
@@ -55,9 +67,23 @@ export function DashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={currentTab === "deals"}>
-              <button onClick={() => handleTabChange("deals")}>
+              <button
+                onClick={() => handleTabChange("deals")}
+                className="hover:cursor-pointer"
+              >
                 <DollarSign />
                 <span>Deals</span>
+              </button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={currentTab === "deals"}>
+              <button
+                onClick={() => handleTabChange("search")}
+                className="hover:cursor-pointer"
+              >
+                <Search />
+                <span>Global Search</span>
               </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -66,11 +92,11 @@ export function DashboardSidebar() {
       <SidebarFooter className="border-t border-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="mb-8">
-              <a href="/api/auth/signout">
+            <SidebarMenuButton asChild className="mb-8" onClick={handleLogout}>
+              <div className="hover:cursor-pointer">
                 <LogOut />
                 <span>Logout</span>
-              </a>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

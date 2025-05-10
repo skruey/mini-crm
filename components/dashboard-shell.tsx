@@ -11,6 +11,7 @@ import { CompaniesTab } from "@/components/companies-tab";
 import { ContactsTab } from "@/components/contacts-tab";
 import { DealsTab } from "@/components/deals-tab";
 import { useSidebar } from "@/components/ui/sidebar";
+import GlobalSearchTab from "@/components/global-search-tab";
 
 export function DashboardShell() {
   const searchParams = useSearchParams();
@@ -18,6 +19,7 @@ export function DashboardShell() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState(tabParam || "companies");
   const { toggleSidebar } = useSidebar();
+  const isNotGlobalSearch = activeTab !== "search";
 
   // Update active tab when URL parameter changes
   useEffect(() => {
@@ -43,16 +45,18 @@ export function DashboardShell() {
             Dashboard
           </h1>
         </div>
-        <div className="relative w-full max-w-xs md:max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder={`Search ${activeTab}...`}
-            className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        {isNotGlobalSearch ? (
+          <div className="relative w-full max-w-xs md:max-w-sm">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={`Search ${activeTab}...`}
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        ) : null}
       </div>
 
       <Tabs
@@ -60,24 +64,21 @@ export function DashboardShell() {
         className="flex-1"
         onValueChange={handleTabChange}
       >
-        <TabsList className="max-sm:w-full md:w-[75%] flex justify-between">
+        <TabsList className="w-full flex justify-between">
           <TabsTrigger
             value="companies"
-            className="flex-1 md:flex-none hover:cursor-pointer"
+            className="flex-1 hover:cursor-pointer"
           >
             Companies
           </TabsTrigger>
-          <TabsTrigger
-            value="contacts"
-            className="flex-1 md:flex-none hover:cursor-pointer"
-          >
+          <TabsTrigger value="contacts" className="flex-1 hover:cursor-pointer">
             Contacts
           </TabsTrigger>
-          <TabsTrigger
-            value="deals"
-            className="flex-1 md:flex-none hover:cursor-pointer"
-          >
+          <TabsTrigger value="deals" className="flex-1 hover:cursor-pointer">
             Deals
+          </TabsTrigger>
+          <TabsTrigger value="search" className="flex-1 hover:cursor-pointer">
+            Global Search
           </TabsTrigger>
         </TabsList>
         <TabsContent value="companies" className="flex-1 h-full mt-4">
@@ -88,6 +89,9 @@ export function DashboardShell() {
         </TabsContent>
         <TabsContent value="deals" className="flex-1 h-full mt-4">
           <DealsTab searchQuery={searchQuery} />
+        </TabsContent>
+        <TabsContent value="search" className="flex-1 h-full mt-4">
+          <GlobalSearchTab />
         </TabsContent>
       </Tabs>
     </div>
