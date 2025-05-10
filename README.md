@@ -25,6 +25,7 @@ cd mini-crm
 
 cp .env.example .env (DATABASE_URL="postgresql://postgres:postgres@localhost:5432/
 mini_crm")
+
 docker compose up -d db
 
 npm install
